@@ -1,17 +1,3 @@
-interface Feedback {
-  id: string;
-  interviewId: string;
-  totalScore: number;
-  categoryScores: Array<{
-    name: string;
-    score: number;
-    comment: string;
-  }>;
-  strengths: string[];
-  areasForImprovement: string[];
-  finalAssessment: string;
-  createdAt: string;
-}
 
 interface Interview {
   id: string;
@@ -38,15 +24,6 @@ interface User {
   id: string;
 }
 
-interface InterviewCardProps {
-  interviewId?: string;
-  userId?: string;
-  role: string;
-  type: string;
-  techstack: string[];
-  createdAt?: string;
-}
-
 interface AgentProps {
   userName: string;
   userId?: string;
@@ -71,17 +48,6 @@ interface GetLatestInterviewsParams {
   limit?: number;
 }
 
-interface SignInParams {
-  email: string;
-  idToken: string;
-}
-
-interface SignUpParams {
-  uid: string;
-  name: string;
-  email: string;
-  password: string;
-}
 
 type FormType = "sign-in" | "sign-up";
 
