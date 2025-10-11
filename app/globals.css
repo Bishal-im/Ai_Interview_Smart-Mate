@@ -188,18 +188,19 @@
 
 /* === Components === */
 @layer components {
-  .btn-call {
+.btn-call {
     @apply inline-block px-7 py-3 font-bold text-sm leading-5 text-white transition-colors duration-150 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl min-w-28 cursor-pointer items-center justify-center overflow-visible;
-    /* DARK emerald -> teal */
-    background-image: linear-gradient(135deg, #064e3b 0%, #0e7490 100%);
+    /* GREEN gradient restored */
+    background-image: linear-gradient(135deg, #065f46 0%, #10b981 100%);
     box-shadow:
-      0 6px 18px rgba(14, 116, 144, 0.40),
+      0 6px 18px rgba(12, 162, 27, 0.4),
       0 1px 0 rgba(255,255,255,0.06) inset;
     transition: box-shadow .2s ease, transform .12s ease, background .2s ease;
     border-radius: 9999px;
-  }
-  .btn-call:hover { box-shadow: 0 10px 28px rgba(14, 116, 144, 0.55); }
-  .btn-call:active { transform: translateY(1px); }
+}
+.btn-call:hover { box-shadow: 0 10px 28px rgba(14, 116, 144, 0.55); }
+.btn-call:active { transform: translateY(1px); }
+
   .btn-call .span { @apply bg-success-100 h-[85%] w-[65%]; }
 
   .btn-disconnect {
