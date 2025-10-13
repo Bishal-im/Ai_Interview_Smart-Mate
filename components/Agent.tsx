@@ -16,15 +16,15 @@ const Agent = ({ userName }: AgentProps) => {
     "Whats Your Name?",
     "My Name is Bishal Pandey, Nice to meet you!",
   ];
+  const lastMessage = messages[messages.length - 1]; // message[1]
 
-  const lastMessage = messages[messages.length - 1];
   return (
     <>
       <div className="call-view">
         <div className="card-interviewer">
           <div className="avatar">
             <Image
-              src="/ai-avatar.png"
+              src="/logo.svg"
               alt="vapi"
               width={65}
               height={54}
