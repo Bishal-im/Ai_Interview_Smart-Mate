@@ -28,13 +28,14 @@ export async function POST(request: Request ){
             Return the questions formatted like this:
             ["Question 1", "Question 2", "Question 3"]
         
-            Thank you!`, });
+            Thank you!`, });  
+    
         
         // const to store into db and pass to vapi
         const interview = {
             role, level ,type,
             techstack: techstack.split(','),
-            questions : JSON.parse(questions),
+            questions : JSON.parse(questions),   // stores ques
             userId: userid,
             finalized: true,
             coverImage: getRandomInterviewCover(),
@@ -55,3 +56,5 @@ export async function POST(request: Request ){
     }
 
 }
+
+
