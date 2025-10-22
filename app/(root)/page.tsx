@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { Section } from "lucide-react";
-import { dummyInterviews } from "@/constants";  // array of sample interview data
+import { dummyInterviews } from "@/constants"; // array of sample interview data
 import InterviewCard from "@/components/InterviewCard";
 
 const page = () => {
@@ -20,7 +20,7 @@ const page = () => {
             </h2>
             <p className="text-lg">Experience Real Time Interview Practise</p>
             <Button asChild className="btn-primary max-sm:w-full">
-              <Link href="/interview"> Start an Interview </Link>
+              <Link href="/Interview"> Start an Interview </Link>
             </Button>
           </div>
           {/* 1st section  */}
