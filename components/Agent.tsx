@@ -76,48 +76,35 @@ const Agent = ({
     if (callStatus === CallStatus.FINISHED) router.push("/");
   }, [callStatus, router]);
 
-  // Updated handleCall for new vapi.start()
   const handleCall = async () => {
-    try {
-      console.log("Starting call...");
-      setCallStatus(CallStatus.CONNECTING);
+    setCallStatus(CallStatus.CONNECTING);
 
-      if (type === "generate") {
-        // For workflow-based call
-        const result = await vapi.start(
-          undefined, // Agent
-          undefined, // options
-          undefined, // callback
-          process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, // workflow ID
-          {
-            variableValues: {
-              username: userName,
-              userid: userId,
-            },
-          }
-        );
-
-        console.log("Vapi workflow started:", result);
-        setCallStatus(CallStatus.ACTIVE);
-      } else {
-        // Interviewer with questions
-        let formattedQuestions = "";
-        if (questions) {
-          formattedQuestions = questions.map((q) => `- ${q}`).join("\n");
-        }
-
-        const result = await vapi.start(interviewer, {
+    if (type === "generate") {
+      await vapi.start(
+        undefined,
+        undefined,
+        undefined,
+        process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
+        {
           variableValues: {
-            questions: formattedQuestions,
+            username: userName,
+            userid: userId,
           },
-        });
-
-        console.log("Vapi workflow started with interviewer:", result);
-        setCallStatus(CallStatus.ACTIVE);
+        }
+      );
+    } else {
+      let formattedQuestions = "";
+      if (questions) {
+        formattedQuestions = questions
+          .map((question) => `- ${question}`)
+          .join("\n");
       }
-    } catch (error) {
-      console.error("Error starting call:", error);
-      setCallStatus(CallStatus.FINISHED);
+
+      await vapi.start(interviewer, {
+        variableValues: {
+          questions: formattedQuestions,
+        },
+      });
     }
   };
 
