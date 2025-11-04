@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 
 interface InterviewCardProps {
-  interviewId?: string;
+  id?: string;
   userId?: string;
   role: string;
   type: string;
@@ -30,7 +30,7 @@ interface Feedback {
 }
 
 const InterviewCard = ({
-  interviewId,
+  id,
   userId,
   role,
   type,
@@ -86,11 +86,7 @@ const InterviewCard = ({
         <div className="flex flex-row justify-between">
           <Button asChild className="btn-primary">
             <Link
-              href={
-                feedback
-                  ? `/interview/${interviewId}/feedback`
-                  : `/interview/${interviewId}`
-              }
+              href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
               {feedback ? "Check Feedback" : "View Interview"}
             </Link>

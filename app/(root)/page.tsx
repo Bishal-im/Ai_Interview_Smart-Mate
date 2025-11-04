@@ -2,25 +2,24 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { Section } from "lucide-react";
-import { dummyInterviews } from "@/constants"; // array of sample interview data
 import InterviewCard from "@/components/InterviewCard";
+import { getCurrentUser } from "@/lib/actions/auth.action";
 import {
   getInterviewByUserId,
-  getCurrentUser,
   getLatestInterview,
-} from "@/lib/actions/auth.action";
+} from "@/lib/actions/general.action";
 
-const page = async () => {
+const Homepage = async () => {
   const user = await getCurrentUser();
 
   const [userInterviews, latestInterviews] = await Promise.all([
-    await getInterviewByUserId(user?.id!),
-    await getLatestInterview({ userId: user?.id! }),
+    getInterviewByUserId(user?.id!),
+    getLatestInterview({ userId: user?.id! }),
   ]);
 
   const hasPastInterviews = userInterviews?.length > 0;
   const hasUpcomingInterviews = latestInterviews?.length > 0;
+
   return (
     <div>
       {/* whole section  */}
@@ -57,7 +56,7 @@ const page = async () => {
                 <InterviewCard {...interview} key={interview.id} /> // if interview is there
               ))
             ) : (
-              <p> You **haven't** taken any interview yet</p> // if interview is not there
+              <p> You haven't taken any interview yet</p> // if interview is not there
             )}
           </div>
         </section>
@@ -71,7 +70,7 @@ const page = async () => {
                 <InterviewCard {...interview} key={interview.id} /> // if interview is there
               ))
             ) : (
-              <p> There are no new interviews available</p> // if interview is not there
+              <p>There is no Interview available</p> // if interview is not there
             )}
           </div>
         </section>
@@ -80,4 +79,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Homepage;
