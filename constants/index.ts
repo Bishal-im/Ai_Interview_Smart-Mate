@@ -1,5 +1,5 @@
-// import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
-// import { z } from "zod";
+import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
+import { z } from "zod";
 
 export const mappings = {
   "react.js": "react",
@@ -155,39 +155,97 @@ export const mappings = {
 //   },
 // };
 
-// export const feedbackSchema = z.object({
-//   totalScore: z.number(),
-//   categoryScores: z.tuple([
-//     z.object({
-//       name: z.literal("Communication Skills"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Technical Knowledge"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Problem Solving"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Cultural Fit"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Confidence and Clarity"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//   ]),
-//   strengths: z.array(z.string()),
-//   areasForImprovement: z.array(z.string()),
-//   finalAssessment: z.string(),
-// });
+export const interviewer: CreateAssistantDTO = {
+  name: "Interviewer",
+  firstMessage:
+    "Hello! It’s wonderful to meet you. I’m looking forward to hearing about your experiences and learning more about you today.",
+  transcriber: {
+    provider: "deepgram",
+    model: "nova-2",
+    language: "en",
+  },
+  voice: {
+    provider: "11labs",
+     voiceId: "sarah",
+    stability: 0.7,
+    similarityBoost: 0.8,            
+    speed: 0.8,
+    style: 0.25,
+    useSpeakerBoost: true,
+  },
+  model: {
+    provider: "openai",
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: `You are a professional job interviewer conducting a real-time voice interview with a candidate. Your goal is to understand the candidate's skills, experience, motivation, and fit for the role, while sounding natural, warm, and human-like.
+
+Interview Guidelines:
+- Follow the structured question flow: {{questions}}
+- Ask short, clear, and concise questions. Each question should focus on a single topic.
+- Keep track of what the candidate has already answered.
+- Avoid asking the same question twice. If a topic was already covered, either skip it or ask a brief, new-angle follow-up.
+- Slightly vary phrasing of repeated question types to make the conversation feel fresh.
+- Listen carefully to the candidate's answers before moving on.
+- Use brief acknowledgements like "I see," "Thank you," or "That's interesting."
+- Only ask follow-up questions if an answer is unclear or needs more detail. Keep follow-ups very short.
+- Speak naturally, in a friendly but professional tone. Avoid overly soft, seductive, or overly formal phrasing.
+
+Answering candidate questions:
+- Provide clear, concise, and professional answers.
+- If unsure, redirect politely to HR or the appropriate team.
+
+Concluding the interview:
+- Summarize key points and thank the candidate for their time.
+- Inform the candidate that the company will follow up with feedback.
+- End the conversation politely and automatically once the interview is complete.
+
+Additional Tips:
+- Keep all responses short and professional.
+- Maintain a warm, encouraging, and respectful tone throughout.
+- Treat the interview as a live human conversation with smooth flow.
+- If you repeat a topic across interviews, paraphrase and ask it in a new way to keep it engaging.`
+      },
+    ],
+  },
+};
+
+
+
+export const feedbackSchema = z.object({
+  totalScore: z.number(),
+  categoryScores: z.tuple([
+    z.object({
+      name: z.literal("Communication Skills"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Technical Knowledge"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Problem Solving"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Cultural Fit"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Confidence and Clarity"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+  ]),
+  strengths: z.array(z.string()),
+  areasForImprovement: z.array(z.string()),
+  finalAssessment: z.string(),
+});
 
 export const interviewCovers = [       // diff paths of our images
   "/adobe.png",

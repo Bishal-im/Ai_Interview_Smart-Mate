@@ -1,5 +1,12 @@
 import { db } from "@/firebase/admin";
 
+
+export async function getInterviewById(id: string): Promise<Interview | null> {
+  const interview = await db.collection("interviews").doc(id).get();
+
+  return interview.data() as Interview | null;
+}
+
 export async function getLatestInterview(params: GetLatestInterviewsParams): Promise<Interview[] | null> {
   const { userId, limit = 20 } = params;
 
@@ -30,8 +37,3 @@ export async function getInterviewByUserId( userId: string): Promise<Interview[]
   })) as Interview[];
 }
 
-export async function getInterviewById(id: string): Promise<Interview | null> {
-  const interview = await db.collection("interviews").doc(id).get();
-
-  return interview.data() as Interview | null;
-}

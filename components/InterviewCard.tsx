@@ -86,7 +86,7 @@ const InterviewCard = ({
         <div className="flex flex-row justify-between">
           <Button asChild className="btn-primary">
             <Link
-              href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
+              href={feedback ? `/Interview/${id}/feedback` : `/Interview/${id}`}
             >
               {feedback ? "Check Feedback" : "View Interview"}
             </Link>
