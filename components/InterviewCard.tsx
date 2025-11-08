@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
 interface InterviewCardProps {
   id?: string;
@@ -29,7 +30,7 @@ interface Feedback {
   createdAt: string;
 }
 
-const InterviewCard = ({
+const InterviewCard = async ({
   id,
   userId,
   role,
@@ -37,7 +38,10 @@ const InterviewCard = ({
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback = null as Feedback | null; // Feedback is defined at type.index.d.ts (interface)
+  const feedback =
+    userId && id
+      ? await getFeedbackByInterviewId({ interviewId: id, userId })
+      : null; // Feedback is defined at type.index.d.ts (interface)
   const normalizedType = /mix/gi.test(type) ? "Mixed" : "technical";
   const formattedDate = dayjs(
     feedback?.createdAt || createdAt || Date.now()
@@ -73,7 +77,7 @@ const InterviewCard = ({
 
             <div className="flex flex-row gap-2 intem-center">
               <p>📋</p>
-              <p>{feedback?.totalscore || "---"}/100</p>
+              <p>{feedback?.totalScore || "---"}/100</p>
             </div>
           </div>
 
