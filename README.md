@@ -1,20 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🧠 SmartMate — AI Interview Assistant
 
-## Getting Started
+SmartMate is an AI-powered real-time mock interview platform that helps users practice and improve their communication and interview skills. Built using Next.js, Firebase, and OpenAI, it provides instant feedback, analysis, and a smart, voice-interactive interview experience.
 
-First, run the development server:
+🚀 Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🔗 SmartMate (Deployed on Vercel)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🧩 Project Overview
+
+SmartMate simulates real-world interview sessions using AI voice agents.
+Users can practice answering questions in a conversational manner — the AI interviewer asks questions, listens, and provides instant feedback based on performance.
+
+This project follows the JavaScript Mastery “AI Interview App” architecture, with improvements and personalization.
+
+⚙️ Tech Stack
+Layer	Technologies
+Frontend	Next.js (App Router), React, Tailwind CSS
+Backend / API	Firebase, Firestore, OpenAI API
+Authentication	Firebase Auth
+AI & Speech	OpenAI GPT Models, Whisper API (Speech-to-Text)
+State Management	Zustand
+Deployment	Vercel
+🧠 Core Features
+
+✅ AI Interviewer (Voice/Chat Based) – Conducts real-time interviews using OpenAI.
+✅ Speech Recognition – Converts user voice responses to text.
+✅ AI Feedback – Analyzes responses and provides performance-based feedback.
+✅ Multiple Roles – Different interview types (Technical, HR, Behavioral).
+✅ Firebase Integration – For authentication, user data, and interview storage.
+✅ Modern UI – Fully responsive, clean, and minimal user experience.
+✅ Performance Analytics (Upcoming) – Visual reports for candidate performance over time.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
