@@ -4,7 +4,8 @@ SmartMate is an AI-powered real-time mock interview platform that helps users pr
 
 🚀 Live Demo
 
-🔗 SmartMate (Deployed on Vercel)
+[🔗 SmartMate (Deployed on Vercel)](https://ai-interview-smart-mate.vercel.app/)
+The call function may not work due to expire of vapi credit point.
 
 🧩 Project Overview
 
