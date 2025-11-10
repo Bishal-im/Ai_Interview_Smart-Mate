@@ -168,13 +168,13 @@ const Agent = ({
         <div className="card-border">
           <div className="card-content">
             <Image
-              src="/user-avatar.png"
+              src="/user_profile.png"
               alt="User Avatar"
               width={120}
               height={120}
               className="rounded-full object-cover"
             />
-            <h3>{userName}</h3>
+            <h3>User</h3>
           </div>
         </div>
       </div>

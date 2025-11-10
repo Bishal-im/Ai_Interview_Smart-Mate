@@ -823,3 +823,19 @@
 .glow-on-hover:hover {
   animation: glow 2s ease-in-out infinite;
 }
+
+/* Navigation enhancements */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 4rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  nav {
+    padding: 1.5rem 1rem;
+  }
+}

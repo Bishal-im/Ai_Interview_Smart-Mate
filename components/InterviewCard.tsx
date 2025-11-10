@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import dayjs from "dayjs";
 import Image from "next/image";
@@ -30,7 +31,7 @@ interface Feedback {
   createdAt: string;
 }
 
-const InterviewCard = async ({
+const InterviewCard = ({
   id,
   userId,
   role,
@@ -38,16 +39,33 @@ const InterviewCard = async ({
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback =
-    userId && id
-      ? await getFeedbackByInterviewId({ interviewId: id, userId })
-      : null;
-  const normalizedType = /mix/gi.test(type) ? "Mixed" : "Technical";
-  const formattedDate = dayjs(
-    feedback?.createdAt || createdAt || Date.now()
-  ).format("MMM D, YYYY");
+  const [feedback, setFeedback] = React.useState<Feedback | null>(null);
+  const [cover, setCover] = React.useState<string | null>(null);
 
-  // Score color based on performance
+  // Fetch feedback on client to avoid SSR mismatch
+  React.useEffect(() => {
+    const fetchFeedback = async () => {
+      if (userId && id) {
+        const data = await getFeedbackByInterviewId({
+          interviewId: id,
+          userId,
+        });
+        setFeedback(data);
+      }
+    };
+    fetchFeedback();
+
+    // Set random cover only once on client
+    setCover(getRandomInterviewCover());
+  }, [id, userId]);
+
+  const normalizedType = /mix/gi.test(type) ? "Mixed" : "Technical";
+
+  // Use a fixed fallback date to avoid Date.now() mismatch
+  const fallbackDate =
+    feedback?.createdAt || createdAt || "2024-01-01T00:00:00Z";
+  const formattedDate = dayjs(fallbackDate).format("MMM D, YYYY");
+
   const getScoreColor = (score: number | undefined) => {
     if (!score) return "text-light-400";
     if (score >= 80) return "text-green-400";
@@ -77,13 +95,15 @@ const InterviewCard = async ({
           {/* Interview Avatar with Glow */}
           <div className="relative w-fit">
             <div className="absolute inset-0 bg-primary-200/30 rounded-full blur-xl group-hover:blur-2xl transition-all duration-500" />
-            <Image
-              src={getRandomInterviewCover()}
-              alt="Interview Cover"
-              width={100}
-              height={100}
-              className="relative rounded-full object-cover size-[100px] border-2 border-primary-200/50 group-hover:border-primary-200 transition-colors duration-300"
-            />
+            {cover && (
+              <Image
+                src={cover}
+                alt="Interview Cover"
+                width={100}
+                height={100}
+                className="relative rounded-full object-cover size-[100px] border-2 border-primary-200/50 group-hover:border-primary-200 transition-colors duration-300"
+              />
+            )}
           </div>
 
           {/* Title */}
