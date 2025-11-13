@@ -27,7 +27,7 @@ const DashboardClient = () => {
 
       {/* Navigation */}
       <nav className="flex items-center justify-between px-16 py-6 max-w-7xl mx-auto max-sm:px-4 relative z-10">
-        <div className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <svg className="w-10 h-10" viewBox="0 0 40 40" fill="none">
             <circle cx="20" cy="20" r="20" fill="url(#gradient)" />
             <path
@@ -43,11 +43,13 @@ const DashboardClient = () => {
               </linearGradient>
             </defs>
           </svg>
-          <h2 className="text-primary-100 text-2xl font-bold">SmartMate</h2>
-        </div>
+          <h2 className="text-primary-100 text-2xl font-bold max-sm:text-xl">
+            SmartMate
+          </h2>
+        </Link>
 
-        <div className="flex gap-4 max-sm:hidden">
-          <Link href="/sign-in" className="btn-secondary">
+        <div className="flex gap-4">
+          <Link href="/sign-in" className="btn-secondary max-sm:hidden">
             Sign In
           </Link>
           <Link href="/sign-up" className="btn-primary">

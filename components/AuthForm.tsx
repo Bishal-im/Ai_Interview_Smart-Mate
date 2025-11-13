@@ -98,19 +98,33 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const isSignIn = type === "sign-in";
 
   return (
-    <div className="card-border lg:min-w-[566px]">
-      <div className="flex flex-col gap-6 card py-14 px-10">
-        <div className="flex flex-row gap-2 justify-center">
-          <Image src="/logo.svg" alt="logo" height={32} width={38} />
-          <h2 className="text-primary-100">PrepWise</h2>
+    <div className="card-border lg:min-w-[566px] max-sm:w-full max-sm:mx-4">
+      <div className="flex flex-col gap-8 card py-14 px-10 max-sm:px-6 max-sm:py-10">
+        {/* Logo Section - Centered */}
+        <div className="flex flex-col items-center">
+          <div className="flex items-center">
+            <Image src="/logo.svg" alt="logo" height={48} width={48} />
+            <h2 className="text-primary-100 text-3xl font-bold">SmartMate</h2>
+          </div>
         </div>
 
-        <h3>Practice job interviews with AI</h3>
+        {/* Welcome Message Section - Separate */}
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-3">
+            {isSignIn ? "Welcome Back" : "Create Account"}
+          </h1>
+          <p className="text-light-100/70 text-base">
+            {isSignIn
+              ? "Sign in to continue your interview practice"
+              : "Start your journey to interview success"}
+          </p>
+        </div>
 
+        {/* Form Section */}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-6 mt-4 form"
+            className="w-full space-y-6 form"
           >
             {!isSignIn && (
               <FormField
@@ -144,15 +158,27 @@ const AuthForm = ({ type }: { type: FormType }) => {
           </form>
         </Form>
 
-        <p className="text-center">
-          {isSignIn ? "No account yet?" : "Have an account already?"}
+        {/* Divider */}
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-light-800/30"></span>
+          </div>
+          <div className="relative flex justify-center text-xs">
+            <span className="bg-dark-300 px-3 text-light-100/60">
+              {isSignIn ? "New to SmartMate?" : "Already have an account?"}
+            </span>
+          </div>
+        </div>
+
+        {/* Switch Account Link */}
+        <div className="text-center">
           <Link
             href={!isSignIn ? "/sign-in" : "/sign-up"}
-            className="font-bold text-user-primary ml-1"
+            className="text-primary-200 hover:text-primary-100 font-semibold text-base transition-colors duration-200"
           >
-            {!isSignIn ? "Sign In" : "Sign Up"}
+            {!isSignIn ? "Sign in to your account" : "Create a new account"}
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

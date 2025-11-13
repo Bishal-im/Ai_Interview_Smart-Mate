@@ -9,17 +9,22 @@ import {
 } from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
+import BackButton from "@/components/BackButton";
 
 const Feedback = async ({ params }: RouteParams) => {
   const { id } = await params;
   const user = await getCurrentUser();
+
+  if (!user || !user.id) {
+    redirect("/sign-in");
+  }
 
   const interview = await getInterviewById(id);
   if (!interview) redirect("/");
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
-    userId: user?.id!,
+    userId: user.id,
   });
 
   // Score color determination
@@ -34,6 +39,11 @@ const Feedback = async ({ params }: RouteParams) => {
 
   return (
     <section className="section-feedback">
+      {/* Back Button */}
+      <div className="mb-6">
+        <BackButton />
+      </div>
+
       {/* Header with animated background */}
       <div className="relative">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary-200/10 rounded-full blur-[100px] -z-10" />

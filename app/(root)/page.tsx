@@ -8,17 +8,26 @@ import {
   getInterviewByUserId,
   getLatestInterview,
 } from "@/lib/actions/general.action";
+import { redirect } from "next/navigation";
 
 const Homepage = async () => {
   const user = await getCurrentUser();
 
+  // Add check for user before querying
+  if (!user || !user.id) {
+    redirect("/sign-in");
+  }
+
   const [userInterviews, latestInterviews] = await Promise.all([
-    getInterviewByUserId(user?.id!),
-    getLatestInterview({ userId: user?.id! }),
+    getInterviewByUserId(user.id), // Now guaranteed to exist
+    getLatestInterview({ userId: user.id }), // Now guaranteed to exist
   ]);
 
-  const hasPastInterviews = userInterviews?.length > 0;
-  const hasUpcomingInterviews = latestInterviews?.length > 0;
+  // const hasPastInterviews = userInterviews?.length > 0;
+  // const hasUpcomingInterviews = latestInterviews?.length > 0;
+
+  const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
+  const hasUpcomingInterviews = (latestInterviews?.length ?? 0) > 0;
 
   return (
     <div className="space-y-12">

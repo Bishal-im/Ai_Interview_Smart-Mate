@@ -16,7 +16,7 @@ const Rootlayout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="root-layout">
-      <nav>
+      <nav className="flex items-center justify-between w-full">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.svg" alt="logo" width={40} height={40} />
           <h2 className="text-primary-100">SmartMate</h2>
@@ -24,13 +24,10 @@ const Rootlayout = async ({ children }: { children: React.ReactNode }) => {
 
         <div className="flex items-center gap-4">
           {user && (
-            <div className="flex items-center gap-3 max-sm:hidden">
-              <div className="flex flex-col items-end">
-                <span className="text-sm font-medium text-white">
-                  {user.name}
-                </span>
-                <span className="text-xs text-light-100/60">{user.email}</span>
-              </div>
+            <div className="flex flex-col items-end max-sm:hidden">
+              <span className="text-sm font-medium text-white">
+                {user.name}
+              </span>
             </div>
           )}
           <LogoutButton />
