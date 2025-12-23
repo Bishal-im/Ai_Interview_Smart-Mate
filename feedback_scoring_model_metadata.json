@@ -1,0 +1,55 @@
+{
+  "train_date": "2025-12-20T13:23:21.963552",
+  "train_samples": 800,
+  "val_samples": 100,
+  "best_params": {
+    "max_depth": 10,
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "n_estimators": 200
+  },
+  "train_rmse": 1.4281772391151535,
+  "train_mae": 1.096023920258509,
+  "train_r2": 0.9961763138023377,
+  "val_rmse": 2.979506311314625,
+  "val_mae": 2.331802458216878,
+  "val_r2": 0.9791943364239274,
+  "feature_importance": [
+    {
+      "feature": "positive_keyword_count",
+      "importance": 0.5308600460855051
+    },
+    {
+      "feature": "technical_term_count",
+      "importance": 0.4107586518065061
+    },
+    {
+      "feature": "negative_indicator_count",
+      "importance": 0.026685807187137
+    },
+    {
+      "feature": "level_encoded",
+      "importance": 0.021547861754681583
+    },
+    {
+      "feature": "avg_response_length",
+      "importance": 0.0036122545319669315
+    },
+    {
+      "feature": "word_count",
+      "importance": 0.0034668210574787745
+    },
+    {
+      "feature": "role_encoded",
+      "importance": 0.003068557576724496
+    },
+    {
+      "feature": "specific_examples",
+      "importance": 0.0
+    },
+    {
+      "feature": "question_count",
+      "importance": 0.0
+    }
+  ]
+}
