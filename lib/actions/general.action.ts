@@ -214,7 +214,6 @@
 
 
 // new one
-
 "use server";
 
 import { generateObject } from "ai";
@@ -303,11 +302,34 @@ async function getMLPrediction(
 // ============================================
 // ORIGINAL WORKING CODE + ML INTEGRATION
 // ============================================
-
 export async function createFeedback(params: CreateFeedbackParams) {
   const { interviewId, userId, transcript } = params;
 
   try {
+    // ============================================
+    // DEBUG: Check transcript size FIRST
+    // ============================================
+    console.log("🔍 DEBUG: Transcript Analysis");
+    console.log("  Total messages:", transcript.length);
+    console.log("  First 3 messages:", transcript.slice(0, 3));
+    console.log("  Last 3 messages:", transcript.slice(-3));
+    
+    // Count user vs assistant messages
+    const userMessages = transcript.filter(msg => msg.role === "user");
+    const assistantMessages = transcript.filter(msg => msg.role === "assistant");
+    
+    console.log("  User messages:", userMessages.length);
+    console.log("  Assistant messages:", assistantMessages.length);
+    
+    // Extract ONLY user responses for ML analysis
+    const userTranscriptOnly = userMessages
+      .map(msg => msg.content)
+      .join(" ");
+    
+    console.log("  User transcript length:", userTranscriptOnly.length);
+    console.log("  User transcript (first 200 chars):", userTranscriptOnly.substring(0, 200));
+    
+    // Original formatting for Gemini (keeps conversation)
     const formattedTranscript = transcript
       .map(
         (sentence: { role: string; content: string }) =>
@@ -317,7 +339,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
 
     console.log("🟢 Calling Gemini API...");
 
-    // YOUR ORIGINAL WORKING GEMINI CALL
+    // Gemini API call (unchanged)
     const { object: { totalScore, categoryScores, strengths, areasForImprovement, finalAssessment } } = await generateObject({
       model: google("gemini-2.5-flash-lite"),
       schema: feedbackSchema,
@@ -338,42 +360,77 @@ export async function createFeedback(params: CreateFeedbackParams) {
 
     console.log("✅ Gemini Score:", totalScore);
 
-    // NEW: Call ML Model (won't break if fails)
+    // ============================================
+    // ML MODEL CALL WITH CLEANED TRANSCRIPT
+    // ============================================
     console.log("🟢 Calling ML Model...");
     
-    // Get interview details for ML model context
+    // Get interview details
     const interview = await getInterviewById(interviewId);
     const actualRole = interview?.role || "Software Engineer";
     const actualLevel = interview?.level || "Mid-level";
     
-    // Call ML Model API
-    const mlResult = await getMLPrediction(formattedTranscript, actualRole, actualLevel);
+    // FIXED: Send ONLY user transcript to ML model
+    console.log("📤 Sending to ML Model:");
+    console.log("  Transcript length for ML:", userTranscriptOnly.length);
+    console.log("  First 150 chars:", userTranscriptOnly.substring(0, 150));
+    
+    const mlResult = await getMLPrediction(userTranscriptOnly, actualRole, actualLevel);
     const mlScore = mlResult.ml_score;
 
-    // Calculate agreement between Gemini and ML scores
+    // Calculate agreement - FIXED VERSION
     const difference = Math.abs(totalScore - mlScore);
     let agreementLevel = "unavailable";
     let confidence = "ML validation unavailable";
 
     if (mlScore > 0) {
-      if (difference <= 5) {
-        agreementLevel = "Strong Agreement";
-        confidence = "High Confidence ✓✓";
-      } else if (difference <= 10) {
-        agreementLevel = "Good Agreement";
-        confidence = "Acceptable ✓";
-      } else if (difference <= 15) {
-        agreementLevel = "Moderate Agreement";
-        confidence = "Review Recommended ~";
+      // Check score ranges for better interpretation
+      const bothVeryLow = totalScore < 40 && mlScore < 40;
+      const bothVeryHigh = totalScore > 85 && mlScore > 85;
+      
+      if (bothVeryLow) {
+        // Both systems agree it's poor
+        if (difference <= 8) {
+          agreementLevel = "Critical Concern";
+          confidence = "Both systems detect major issues ⚠️";
+        } else {
+          agreementLevel = "Divergent Low Scores";
+          confidence = "Review Required ⚠️";
+        }
+      } else if (bothVeryHigh) {
+        // Both systems agree it's excellent
+        if (difference <= 5) {
+          agreementLevel = "Excellent Consensus";
+          confidence = "High Confidence ✓✓";
+        } else {
+          agreementLevel = "Strong Performance";
+          confidence = "Reliable Assessment ✓";
+        }
       } else {
-        agreementLevel = "Divergent Scores";
-        confidence = "Human Review Required !";
+        // Normal range scores
+        if (difference <= 5) {
+          agreementLevel = "Strong Agreement";
+          confidence = "High Confidence ✓✓";
+        } else if (difference <= 10) {
+          agreementLevel = "Good Agreement";
+          confidence = "Acceptable ✓";
+        } else if (difference <= 15) {
+          agreementLevel = "Moderate Agreement";
+          confidence = "Review Recommended ~";
+        } else {
+          agreementLevel = "Divergent Scores";
+          confidence = "Human Review Required !";
+        }
       }
     }
 
-    console.log("✅ ML Score:", mlScore, "| Agreement:", agreementLevel);
+    console.log("📊 Score Comparison:");
+    console.log("  Gemini Score:", totalScore);
+    console.log("  ML Score:", mlScore);
+    console.log("  Difference:", difference);
+    console.log("  Agreement:", agreementLevel);
 
-    // Save to Firestore with all fields including ML data
+    // Save to Firestore
     const feedbackData = {
       interviewId,
       userId,
@@ -384,15 +441,17 @@ export async function createFeedback(params: CreateFeedbackParams) {
       finalAssessment,
       createdAt: new Date().toISOString(),
       
-      // NEW ML fields - will appear alongside Gemini fields
+      // ML fields
       ml_score: mlScore,
-      gemini_score: totalScore, // Duplicate for clarity
+      gemini_score: totalScore,
       agreement_level: agreementLevel,
       difference: difference,
       confidence: confidence,
+      
+      // DEBUG fields (optional, remove later)
+      debug_transcript_length: transcript.length,
+      debug_user_responses: userMessages.length,
     };
-
-    console.log("📊 Saving to Firebase with ML fields:", feedbackData);
 
     const feedbackRef = await db.collection('feedback').add(feedbackData);
 
