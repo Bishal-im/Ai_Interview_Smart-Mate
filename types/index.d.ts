@@ -11,6 +11,13 @@ interface Feedback {
   areasForImprovement: string[];
   finalAssessment: string;
   createdAt: string;
+  
+  // NEW ML fields - add these 5 lines only
+  ml_score: number;
+  gemini_score: number;
+  agreement_level: string;
+  difference: number;
+  confidence: string;
 }
 
 

@@ -55,15 +55,15 @@ const Agent = ({
 
     const onSpeechStart = () => setIsSpeaking(true);
     const onSpeechEnd = () => setIsSpeaking(false);
-    // const onError = (error: Error) => console.log("Error", error);
+    const onError = (error: Error) => console.log("Error", error);
 
-    const onError = (error: any) => {
-      if (error?.errorMsg === "Meeting has ended") {
-        console.log("✅ Call ended normally");
-        return;
-      }
-      console.error("❌ Error:", error);
-    };
+    // const onError = (error: any) => {
+    //   if (error?.errorMsg === "Meeting has ended") {
+    //     console.log("✅ Call ended normally");
+    //     return;
+    //   }
+    //   console.error("❌ Error:", error);
+    // };
 
     vapi.on("call-start", onCallStart);
     vapi.on("call-end", onCallEnd);

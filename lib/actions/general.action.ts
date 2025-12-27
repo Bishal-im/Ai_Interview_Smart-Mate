@@ -213,8 +213,10 @@
 
 
 
-// new one 
-"use server"; 
+// new one
+
+"use server";
+
 import { generateObject } from "ai";
 import { google } from "@ai-sdk/google";
 
@@ -288,7 +290,7 @@ async function getMLPrediction(
       console.error("❌ ML API error:", response.status);
       throw new Error(`ML API returned status ${response.status}`);
     }
-
+ 
     const data = await response.json();
     console.log("✅ ML Model response:", data);
     return { ml_score: data.ml_score };
@@ -317,7 +319,6 @@ export async function createFeedback(params: CreateFeedbackParams) {
 
     // YOUR ORIGINAL WORKING GEMINI CALL
     const { object: { totalScore, categoryScores, strengths, areasForImprovement, finalAssessment } } = await generateObject({
-      // model: google("gemini-2.0-flash-001"),
       model: google("gemini-2.5-flash-lite"),
       schema: feedbackSchema,
       prompt: `
@@ -339,10 +340,17 @@ export async function createFeedback(params: CreateFeedbackParams) {
 
     // NEW: Call ML Model (won't break if fails)
     console.log("🟢 Calling ML Model...");
-    const mlResult = await getMLPrediction(formattedTranscript);
+    
+    // Get interview details for ML model context
+    const interview = await getInterviewById(interviewId);
+    const actualRole = interview?.role || "Software Engineer";
+    const actualLevel = interview?.level || "Mid-level";
+    
+    // Call ML Model API
+    const mlResult = await getMLPrediction(formattedTranscript, actualRole, actualLevel);
     const mlScore = mlResult.ml_score;
 
-    // Calculate agreement
+    // Calculate agreement between Gemini and ML scores
     const difference = Math.abs(totalScore - mlScore);
     let agreementLevel = "unavailable";
     let confidence = "ML validation unavailable";
@@ -365,8 +373,8 @@ export async function createFeedback(params: CreateFeedbackParams) {
 
     console.log("✅ ML Score:", mlScore, "| Agreement:", agreementLevel);
 
-    // Save to Firestore (original + new ML fields)
-    const feedback = await db.collection('feedback').add({
+    // Save to Firestore with all fields including ML data
+    const feedbackData = {
       interviewId,
       userId,
       totalScore,
@@ -375,19 +383,24 @@ export async function createFeedback(params: CreateFeedbackParams) {
       areasForImprovement,
       finalAssessment,
       createdAt: new Date().toISOString(),
-      // NEW ML fields
+      
+      // NEW ML fields - will appear alongside Gemini fields
       ml_score: mlScore,
-      gemini_score: totalScore,
+      gemini_score: totalScore, // Duplicate for clarity
       agreement_level: agreementLevel,
       difference: difference,
       confidence: confidence,
-    });
+    };
 
-    console.log("✅ Feedback saved:", feedback.id);
+    console.log("📊 Saving to Firebase with ML fields:", feedbackData);
+
+    const feedbackRef = await db.collection('feedback').add(feedbackData);
+
+    console.log("✅ Feedback saved with ID:", feedbackRef.id);
 
     return {
       success: true,
-      feedbackId: feedback.id
+      feedbackId: feedbackRef.id
     };
 
   } catch(e) {
@@ -395,6 +408,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
     return { success: false };
   }
 }
+
 
 export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdParams): Promise<Feedback | null> {
   const { interviewId, userId } = params;
@@ -408,6 +422,17 @@ export async function getFeedbackByInterviewId(params: GetFeedbackByInterviewIdP
   if (feedbackQuery.empty) return null;
 
   const feedbackDoc = feedbackQuery.docs[0];
-     
-  return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
+  const feedbackData = feedbackDoc.data();
+  
+  // Return feedback with ML fields
+  return { 
+    id: feedbackDoc.id, 
+    ...feedbackData,
+    // Ensure ML fields are included
+    ml_score: feedbackData.ml_score || 0,
+    gemini_score: feedbackData.gemini_score || feedbackData.totalScore || 0,
+    agreement_level: feedbackData.agreement_level || "unavailable",
+    difference: feedbackData.difference || 0,
+    confidence: feedbackData.confidence || "",
+  } as Feedback;
 }
